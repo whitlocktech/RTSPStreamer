@@ -1,0 +1,20 @@
+{
+  "name": "rtspstreamer",
+  "version": "1.0.0",
+  "description": "This is a very simple server that take in a RTSP stream and rebroadcasts it",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "rtsp",
+    "backend",
+    "youtube"
+  ],
+  "author": "whitlocktech",
+  "license": "MIT",
+  "dependencies": {
+    "fluent-ffmpeg": "^2.1.2",
+    "googleapis": "^118.0.0"
+  }
+}
