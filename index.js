@@ -1,55 +1,55 @@
-const { google } = require('googleapis')
-const ffmpeg = require('fluent-ffmpeg')
+const { google } = require('googleapis');
+const ffmpeg = require('fluent-ffmpeg');
 
 class RTSPStreamer {
-  constructor() { 
-    this.rtspStreamUrl = options.rtspStreamUrl
-    this.youtubeStreamKey = options.youtubeStreamKey
-    this.youtubeClientId = options.youtubeClientId
-    this.youtubeClientSecret = options.youtubeClientSecret
-    this.youtubeRefreshToken = options.youtubeRefreshToken
-    this.title = options.title || 'RTSP Stream'
-    this.privacyStatus = options.privacyStatus || 'public'
+  constructor(options) {
+    this.rtspStreamUrl = options.rtspStreamUrl;
+    this.youtubeStreamKey = options.youtubeStreamKey;
+    this.youtubeClientId = options.youtubeClientId;
+    this.youtubeClientSecret = options.youtubeClientSecret;
+    this.youtubeRefreshToken = options.youtubeRefreshToken;
+    this.title = options.title || 'RTSP Stream';
+    this.privacyStatus = options.privacyStatus || 'public';
   }
 
-  async start() { 
+  async start() {
     const oAuth2Client = new google.auth.OAuth2(
       this.youtubeClientId,
       this.youtubeClientSecret
-    )
-    oAuth2Client.setCredentials({ refresh_token: this.youtubeRefreshToken })
+    );
+    oAuth2Client.setCredentials({ refresh_token: this.youtubeRefreshToken });
 
     const youtube = google.youtube({
       version: 'v3',
-      auth: oAuth2Client
-    })
+      auth: oAuth2Client,
+    });
 
-    const brodcast = await youtube.liveBroadcasts.insert({
+    const broadcast = await youtube.liveBroadcasts.insert({
       part: ['snippet', 'status'],
       requestBody: {
         snippet: {
           title: this.title,
-          scheduledStartTime: new Date()
+          scheduledStartTime: new Date(),
         },
         status: {
-          privacyStatus: this.privacyStatus
-        }
-      }
-    })
+          privacyStatus: this.privacyStatus,
+        },
+      },
+    });
 
-    const brodactId = brodcast.data.id
+    const broadcastId = broadcast.data.id;
     const streamKey = await youtube.liveStreams.insert({
       part: ['snippet', 'cdn'],
       requestBody: {
         snippet: {
-          title: this.title
+          title: this.title,
         },
         cdn: {
           format: '720p',
-          ingestionType: 'rtmp'
-        }
-      }
-    }).then((stream) => stream.data.cdn.ingestionInfo.streamName)
+          ingestionType: 'rtmp',
+        },
+      },
+    }).then((stream) => stream.data.cdn.ingestionInfo.streamName);
 
     ffmpeg(this.rtspStreamUrl)
       .inputOptions('-rtsp_transport tcp')
@@ -57,9 +57,9 @@ class RTSPStreamer {
       .output(`rtmp://a.rtmp.youtube.com/live2/${streamKey}`)
       .outputOptions('-c:v copy', '-c:a copy')
       .on('start', () => console.log('Start streaming'))
-      .on('error', (err) => console.log('Error', err.message))
-      .run
+      .on('error', (err) => console.log('Error:', err.message))
+      .run();
   }
 }
 
-module.exports = RTSPStreamer
+module.exports = RTSPStreamer;

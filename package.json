@@ -4,7 +4,7 @@
   "description": "This is a very simple server that take in a RTSP stream and rebroadcasts it",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "keywords": [
     "rtsp",
@@ -16,5 +16,8 @@
   "dependencies": {
     "fluent-ffmpeg": "^2.1.2",
     "googleapis": "^118.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0"
   }
 }
