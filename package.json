@@ -1,6 +1,6 @@
 {
   "name": "rtspstreamer",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "This is a very simple server that take in a RTSP stream and rebroadcasts it",
   "main": "index.js",
   "scripts": {
